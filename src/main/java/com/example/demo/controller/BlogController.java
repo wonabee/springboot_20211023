@@ -1,29 +1,35 @@
 package com.example.demo.controller;
 
-// 혼자 삭제함 import org.hibernate.mapping.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import com.example.demo.model.domain.Article;
 import com.example.demo.model.service.BlogService;
-
-
-//혼자 추가한 import
-import java.util.List;
-
+import com.example.demo.model.service.AddArticleRequest;
 
 @Controller
 public class BlogController {
-    //Autowired 혼자 추가함
-    @Autowired
-    private BlogService blogService;
 
+    private final BlogService blogService;
+
+    // 의존성 주입: 생성자를 통해 BlogService를 주입받음
+    public BlogController(BlogService blogService) {
+        this.blogService = blogService;
+    }
+
+    // 게시판 리스트를 처리하는 메소드
     @GetMapping("/article_list") // 게시판 링크 지정
-    public String article_list(Model model) {
-    List<Article> list = blogService.findAll(); // 게시판 리스트
-    model.addAttribute("articles", list); // 모델에 추가
-    return "article_list"; // .HTML 연결
+    public String articleList(Model model) {
+        List<Article> list = blogService.findAll(); // 게시판 리스트
+        model.addAttribute("articles", list); // 모델에 추가
+        return "article_list"; // article_list.html 파일로 연결
     }
+
+    @GetMapping("/favicon.ico")
+    public void favicon() {
+    // 아무 작업도 하지 않음
     }
+}
