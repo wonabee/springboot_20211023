@@ -3,6 +3,9 @@ package com.example.demo.model.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 //import com.example.demo.model.domain.Article;
@@ -45,6 +48,10 @@ public class BlogService {
     //     return blogRepository.save(request.toEntity());
     // }
     
+    public Board save(AddArticleRequest request){
+        // DTO가 없는 경우 이곳에 직접 구현 가능
+        return blogRepository.save(request.toEntity());
+        }
 
     public void update(Long id, AddArticleRequest request) {
         Optional<Board> optionalArticle = blogRepository.findById(id); // 단일 글 조회
@@ -61,4 +68,12 @@ public class BlogService {
        
     //     throw new UnsupportedOperationException("Unimplemented method 'update'");
     // }
+
+    public Page<Board> findAll(Pageable pageable) {
+        return blogRepository.findAll(pageable);
+        }
+        public Page<Board> searchByKeyword(String keyword, Pageable pageable) {
+        return blogRepository.findByTitleContainingIgnoreCase(keyword, pageable);
+        } // LIKE 검색 제공(대소문자 무시)
+
 }

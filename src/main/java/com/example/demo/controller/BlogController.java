@@ -3,7 +3,11 @@ package com.example.demo.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+//import org.springframework.data.domain.Pageable;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 // import org.springframework.http.HttpStatus;
 // import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -14,9 +18,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 //import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 //import org.springframework.web.bind.annotation.PostMapping;
 //import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 //import com.example.demo.model.domain.Article;
 import com.example.demo.model.domain.Board;
@@ -37,9 +43,18 @@ public class BlogController {
     // }
 
     @GetMapping("/board_list") // 새로운 게시판 링크 지정
-    public String board_list(Model model) {
-    List<Board> list = blogService.findAll(); // 게시판 전체 리스트
+    public String board_list(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "") String keyword) {
+    PageRequest pageable = PageRequest.of(page, 3); // 한 페이지의 게시글 수
+    Page<Board> list; // Page를 반환
+    if (keyword.isEmpty()) {
+    list = blogService.findAll(pageable); // 기본 전체 출력(키워드 x)
+    } else {
+    list = blogService.searchByKeyword(keyword, pageable); // 키워드로 검색
+    }
     model.addAttribute("boards", list); // 모델에 추가
+    model.addAttribute("totalPages", list.getTotalPages()); // 페이지 크기
+    model.addAttribute("currentPage", page); // 페이지 번호
+    model.addAttribute("keyword", keyword); // 키워드
     return "board_list"; // .HTML 연결
     }
 
@@ -72,6 +87,11 @@ public class BlogController {
         }
         return "board_edit";
     }
+
+    @GetMapping("/board_write")
+    public String board_write() {
+        return "board_write";
+    }
     
 
     @PutMapping("/api/board_edit/{id}")
@@ -86,6 +106,11 @@ public class BlogController {
         return "redirect:/board_list";
     }
 
+    @PostMapping("/api/boards") // 글쓰기 게시판 저장
+    public String addboards(@ModelAttribute AddArticleRequest request) {
+    blogService.save(request);
+    return "redirect:/board_list"; // .HTML 연결
+    }
 
     // // 5주차 연습문제
     // @PostMapping("/api/articles")
