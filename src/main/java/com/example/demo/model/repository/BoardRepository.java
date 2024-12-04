@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 // import com.example.demo.model.domain.Article;
 import com.example.demo.model.domain.Board;
 
-@Repository
+@Repository 
 public interface BoardRepository extends JpaRepository<Board, Long>{
 Page<Board> findByTitleContainingIgnoreCase(String title, Pageable pageable);
 }
