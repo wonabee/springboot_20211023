@@ -3,7 +3,11 @@ package com.example.demo.controller;
 import com.example.demo.model.domain.Member; // 올바른 Member 클래스
 import com.example.demo.model.service.AddMemberRequest;
 import com.example.demo.model.service.MemberService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.ui.Model; // Spring의 Model 클래스
+import org.springframework.validation.BindingResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,12 +20,17 @@ public class MemberController {
     private MemberService memberService;
 
     @GetMapping("/join_new") // 회원 가입 페이지 연결
-    public String join_new() {
+    public String join_new(Model model) {
+        model.addAttribute("memberRequest", new AddMemberRequest());
         return "join_new"; // .HTML 연결
     }
 
     @PostMapping("/api/members") // 회원 가입 저장
-    public String addMembers(@ModelAttribute AddMemberRequest request) {
+    public String addMembers(@Valid @ModelAttribute("memberRequest") AddMemberRequest request,
+                            BindingResult bindingResult, Model model) {
+                                if(bindingResult.hasErrors()){
+                                    return "join_new";
+                                }
         memberService.saveMember(request);
         return "join_end"; // .HTML 연결
     }
