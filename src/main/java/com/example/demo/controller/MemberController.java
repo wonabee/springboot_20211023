@@ -4,10 +4,15 @@ import com.example.demo.model.domain.Member; // 올바른 Member 클래스
 import com.example.demo.model.service.AddMemberRequest;
 import com.example.demo.model.service.MemberService;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import jakarta.websocket.Session;
 
 import org.springframework.ui.Model; // Spring의 Model 클래스
 import org.springframework.validation.BindingResult;
+
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,9 +46,13 @@ public class MemberController {
     }
 
     @PostMapping("/api/login_check") // 로그인(아이디, 패스워드) 체크
-    public String checkMembers(@ModelAttribute AddMemberRequest request, Model model) {
+    public String checkMembers(@ModelAttribute AddMemberRequest request, Model model, HttpSession session) {
         try {
             Member member = memberService.loginCheck(request.getEmail(), request.getPassword()); // 패스워드 반환
+            String sessionId = UUID.randomUUID().toString(); //임의의 고유 ID로 세션 생성
+            String email = request.getEmail(); //이메일 얻기
+            session.setAttribute("userId", sessionId); // 아이디 이름 설정
+            session.setAttribute("email", email); //이메일 설정
             model.addAttribute("member", member); // 로그인 성공 시 회원 정보 전달
             return "redirect:/board_list"; // 로그인 성공 후 이동할 페이지
         } catch (IllegalArgumentException e) {

@@ -30,6 +30,8 @@ import com.example.demo.model.service.AddArticleRequest;
 //import com.example.demo.model.service.AddArticleRequest;
 import com.example.demo.model.service.BlogService;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 public class BlogController {
     @Autowired
@@ -45,7 +47,28 @@ public class BlogController {
     @GetMapping("/board_list") // 새로운 게시판 링크 지정
     public String board_list(Model model, 
                     @RequestParam(defaultValue = "0") int page, 
-                    @RequestParam(defaultValue = "") String keyword) {
+                    @RequestParam(defaultValue = "") String keyword,
+                    HttpSession session) {//세션 객체 전달
+                        // 세션 ID 가져오기
+    String sessionId = session.getId(); 
+    System.out.println("세션 ID: " + sessionId); // 터미널에 세션 ID 출력
+
+        String userId = (String) session.getAttribute("userId"); // 세션 아이디 존재 확인
+        String email = (String) session.getAttribute("email"); // 세션에서 이메일 확인
+
+        if(userId == null){
+            System.out.println("세션 userId가 없습니다. 로그인 페이지로 리다이렉션됩니다.");
+            return "redirect:/member_login"; // 로그인 페이지로 리다이렉션
+        } 
+        System.out.println("세션 userID: " + userId);//서버 IDE 터미널에 세션 값 출력   
+        
+        if(email == null){
+            System.out.println("세션 email이 없습니다. 로그인 페이지로 리다이렉션됩니다.");
+            return "redirect:/member_login"; // 로그인 페이지로 리다이렉션
+        } 
+        System.out.println("세션 email: " + userId);//서버 IDE 터미널에 세션 값 출력 
+
+        //페이지 처리 로직
     PageRequest pageable = PageRequest.of(page, 3); // 한 페이지의 게시글 수
 
     Page<Board> list; // Page를 반환
@@ -61,6 +84,7 @@ public class BlogController {
     model.addAttribute("totalPages", list.getTotalPages()); // 페이지 크기
     model.addAttribute("currentPage", page); // 페이지 번호
     model.addAttribute("keyword", keyword); // 키워드
+    model.addAttribute("email", email); // 로그인 사용자(이메일)
 
     return "board_list"; // .HTML 연결
     }
