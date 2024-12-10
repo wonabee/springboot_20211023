@@ -17,43 +17,43 @@
         <div class="card-body">
         <h3 class="card-title text-center mb-4">회원정보 입력</h3>
         <form th:action="@{/api/members}" th:object="${memberRequest}" method="post">
-            <!-- 이름 -->
             <div class="form-group">
                 <label for="name">이름</label>
                 <input type="text" class="form-control" id="name" th:field="*{name}" placeholder="이름을 입력하세요">
-                <div class="text-danger mt-1" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                <div class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
             </div>
-            <!-- 이메일 -->
+        
             <div class="form-group">
                 <label for="email">이메일</label>
                 <input type="email" class="form-control" id="email" th:field="*{email}" placeholder="example@email.com">
-                <div class="text-danger mt-1" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
             </div>
-            <!-- 비밀번호 -->
+        
             <div class="form-group">
                 <label for="password">비밀번호</label>
                 <input type="password" class="form-control" id="password" th:field="*{password}" placeholder="비밀번호를 입력하세요">
-                <div class="text-danger mt-1" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                <div class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
             </div>
-            <!-- 나이 -->
+        
             <div class="form-group">
                 <label for="age">나이</label>
                 <input type="number" class="form-control" id="age" th:field="*{age}" placeholder="나이를 입력하세요">
-                <div class="text-danger mt-1" th:if="${#fields.hasErrors('age')}" th:errors="*{age}"></div>
+                <div class="text-danger" th:if="${#fields.hasErrors('age')}" th:errors="*{age}"></div>
             </div>
-            <!-- 전화번호 -->
+            
+        
             <div class="form-group">
                 <label for="mobile">전화번호</label>
                 <input type="tel" class="form-control" id="mobile" th:field="*{mobile}" placeholder="010-1234-5678">
-                <div class="text-danger mt-1" th:if="${#fields.hasErrors('mobile')}" th:errors="*{mobile}"></div>
+                <div class="text-danger" th:if="${#fields.hasErrors('mobile')}" th:errors="*{mobile}"></div>
             </div>
-            <!-- 주소 -->
+        
             <div class="form-group">
                 <label for="address">주소</label>
                 <input type="text" class="form-control" id="address" th:field="*{address}" placeholder="주소를 입력하세요">
-                <div class="text-danger mt-1" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
+                <div class="text-danger" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
             </div>
-            <!-- 회원가입 버튼 -->
+        
             <div class="text-center mt-4">
                 <button type="submit" class="btn btn-primary btn-block">회원가입하기</button>
             </div>

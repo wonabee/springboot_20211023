@@ -27,10 +27,10 @@ public class MemberController {
 
     @PostMapping("/api/members") // 회원 가입 저장
     public String addMembers(@Valid @ModelAttribute("memberRequest") AddMemberRequest request,
-                            BindingResult bindingResult, Model model) {
-                                if(bindingResult.hasErrors()){
-                                    return "join_new";
-                                }
+        BindingResult bindingResult, Model model) {
+            if(bindingResult.hasErrors()){
+                return "join_new";
+                }
         memberService.saveMember(request);
         return "join_end"; // .HTML 연결
     }
