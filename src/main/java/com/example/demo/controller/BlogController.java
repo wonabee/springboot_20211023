@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -89,18 +91,23 @@ public class BlogController {
     return "board_list"; // .HTML 연결
     }
 
-    @GetMapping("/board_view/{id}") // 게시판 링크 지정
-    public String board_view(Model model, @PathVariable Long id) {
-    Optional<Board> list = blogService.findById(id); // 선택한 게시판 글
+    @GetMapping("/board_view/{id}")
+    public String board_view(Model model, @PathVariable Long id, HttpSession session) {
+    Optional<Board> board = blogService.findById(id);
+    String currentUser = (String) session.getAttribute("email");
 
-    if (list.isPresent()) {
-    model.addAttribute("boards", list.get()); // 존재할 경우 실제 Article 객체를 모델에 추가
+    if (board.isPresent()) {
+        model.addAttribute("board", board.get()); // 단일 객체 전달
+        model.addAttribute("boards", board.get()); // 단일 객체 전달
+        model.addAttribute("currentUser", currentUser);
     } else {
-    // 처리할 로직 추가 (예: 오류 페이지로 리다이렉트, 예외 처리 등)
-    return "/error_page/article_error"; // 오류 처리 페이지로 연결
+        return "/error_page/article_error";
     }
-    return "board_view"; // .HTML 연결
-    }
+    return "board_view";
+}
+
+
+
 
     @GetMapping("/board_edit/{id}") // 게시판 링크 지정
     public String article_edit(Model model, @PathVariable String id) {
@@ -120,9 +127,19 @@ public class BlogController {
     }
 
     @GetMapping("/board_write")
-    public String board_write() {
-        return "board_write";
+    public String board_write(Model model, HttpSession session) {
+    String email = (String) session.getAttribute("email");
+    if (email == null) {
+        email = "GUEST";
     }
+    // 현재 날짜 계산
+    LocalDate today = LocalDate.now();
+    String formattedDate = today.format(DateTimeFormatter.ofPattern("MM월 dd일")); // 원하는 포맷으로 변경 가능
+    model.addAttribute("email", email);
+    model.addAttribute("newdate", formattedDate); // 현재 날짜를 모델에 추가
+    return "board_write";
+}
+
     
 
     @PutMapping("/api/board_edit/{id}")

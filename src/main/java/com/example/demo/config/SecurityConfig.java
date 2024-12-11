@@ -20,6 +20,7 @@ public class SecurityConfig {
                     response.setHeader("X-XSS-Protection", "1; mode=block");
                 })
             )
+            // .csrf(withDefaults())
             .csrf(csrf -> csrf.disable()) // CSRF 비활성화
             .sessionManagement(session -> session
                 .invalidSessionUrl("/session-expired")
