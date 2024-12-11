@@ -32,7 +32,7 @@
                 <thead>
                     <tr>
                         <th>글 번호</th><!--8주차 연습문제-->
-                        <th>ID</th>
+                        <!-- ID 값 user가 보지 않아도 되는 DB 값 <th>ID</th> -->
                         <th>제목</th>
                         <th>작성자</th>
                         <th>작성일</th>
@@ -45,7 +45,7 @@
                     <tr th:each="board, stat : ${boards}">
                         <!-- 글 번호 계산 -->
                         <td th:text="${startNum + stat.index}"></td> <!-- stat.index로 글 번호 계산 -->
-                        <td th:text="${board.id}"></td>
+                        <!-- ID값 user가 보지 않아도 되는 DB 값 <td th:text="${board.id}"></td> -->
                         <td>
                             <a th:href="@{/board_view/{id}(id=${board.id})}">
                                 <span th:text="${board.title}"></span>
