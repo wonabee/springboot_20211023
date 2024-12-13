@@ -20,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class MemberController {
@@ -42,9 +43,12 @@ public class MemberController {
         return "join_end"; // .HTML 연결
     }
 
-    @GetMapping("/member_login") // 로그인 페이지 연결
-    public String member_login() {
-        return "login"; // .HTML 연결
+    @GetMapping("/member_login")
+    public String member_login(Model model) {
+    if (model.containsAttribute("message")) {
+        model.addAttribute("showMessage", true); // 메시지 표시 플래그
+    }
+    return "login";
     }
 
     @PostMapping("/api/login_check") // 아이디, 패스워드 로그인 체크
@@ -88,21 +92,32 @@ public class MemberController {
     }
 
     @GetMapping("/api/logout")
-    public String member_logout(Model model, HttpServletRequest request2, HttpServletResponse response) {
-        try {
-            HttpSession session = request2.getSession(false); // 기존 세션 가져오기
-            if (session != null) {
-                session.invalidate(); // 기존 세션 무효화
-                Cookie cookie = new Cookie("JSESSIONID", null); // 쿠키 초기화
-                cookie.setPath("/");
-                cookie.setMaxAge(0);
-                response.addCookie(cookie);
-            }
-            return "login"; // 로그아웃 후 로그인 페이지로 이동
-        } catch (IllegalArgumentException e) {
-            System.out.println("Logout error: " + e.getMessage()); // Logger 대신 출력
-            model.addAttribute("error", "로그아웃 실패: " + e.getMessage());
-            return "login";
+    public String member_logout(Model model, HttpServletRequest request2, 
+                            HttpServletResponse response, 
+                            RedirectAttributes redirectAttributes) {
+    try {
+        HttpSession session = request2.getSession(false); // 기존 세션 가져오기
+        
+        // 세션이 유효한 경우만 처리 -> 11주차 연습문제
+        if (session != null && session.getAttribute("email") != null) {
+            session.invalidate(); // 현재 사용자 세션 무효화
+            Cookie cookie = new Cookie("JSESSIONID", null); // JSESSIONID 쿠키 삭제
+            cookie.setPath("/");
+            cookie.setMaxAge(0); // 즉시 만료
+            response.addCookie(cookie);
+            
+            // 로그아웃 성공 메시지 추가
+            redirectAttributes.addFlashAttribute("message", "성공적으로 로그아웃되었습니다.");
+        } else {
+            // 세션이 없거나 이미 로그아웃된 상태
+            redirectAttributes.addFlashAttribute("message", "이미 로그아웃된 상태입니다.");
         }
+    } catch (Exception e) {
+        System.out.println("Logout error: " + e.getMessage()); // 예외 로그 출력
+        redirectAttributes.addFlashAttribute("error", "로그아웃 중 오류가 발생했습니다.");
     }
+    return "redirect:/member_login"; // 로그인 페이지로 리다이렉트
 }
+
+    }
+

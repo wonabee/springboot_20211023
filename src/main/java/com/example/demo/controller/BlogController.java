@@ -106,9 +106,6 @@ public class BlogController {
     return "board_view";
 }
 
-
-
-
     @GetMapping("/board_edit/{id}") // 게시판 링크 지정
     public String article_edit(Model model, @PathVariable String id) {
 
@@ -139,8 +136,6 @@ public class BlogController {
     model.addAttribute("newdate", formattedDate); // 현재 날짜를 모델에 추가
     return "board_write";
 }
-
-    
 
     @PutMapping("/api/board_edit/{id}")
     public String updateArticle(@PathVariable Long id, @ModelAttribute AddArticleRequest request) {

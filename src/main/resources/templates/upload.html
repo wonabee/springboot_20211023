@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>블로그 게시판(new)</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container text-center mt-5">
+        <h1>파일 업로드</h1>
+        <form action="/upload-files" method="post" enctype="multipart/form-data">
+            <label>파일 1:</label>
+            <input type="file" name="files"><br><br>
+            <label>파일 2:</label>
+            <input type="file" name="files"><br><br>
+            <button type="submit">업로드</button>
+        </form>
+    <a href="/" class="btn btn-primary btn-lg">
+    홈으로 돌아가기
+    </a>
+    </div>
+</body>
+
+</html>
